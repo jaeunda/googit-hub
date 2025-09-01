@@ -9,7 +9,7 @@ EXECUTABLE = googit
 TARGET = $(TARGET_DIR)/$(EXECUTABLE)
 
 SOURCES = $(wildcard $(SRC_DIR)/*.c)
-OBJECTS = $(patsubst $(SRC_DIR)/%.c,%(OBJ_DIR)/%.o,$(SOURCES))
+OBJECTS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SOURCES))
 
 all: $(TARGET)
 
