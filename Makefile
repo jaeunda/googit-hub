@@ -19,7 +19,7 @@ $(TARGET): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ $^
 	@echo "Build Complete: $(TARGET)"
 
-$(OBJ_DIR)/%.o: $$(SRC_DIR)/$.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo "Compiling $<..."
 	@mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c -o $@ $<
