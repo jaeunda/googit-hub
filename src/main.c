@@ -11,6 +11,26 @@ int main(int argc, char **argv){
         print_usage();
         exit(1);
     }
+    char *command = argv[1];
+
+    if (!strcmp(command, "init")){
+
+    } else if (!strcmp(command, "push")){
+
+    } else if (!strcmp(command, "run")){
+
+    } else if (!strcmp(command, "zip")){
+
+    } else if (!strcmp(command, "test")){
+
+    } else if (!strcmp(command, "restore")){
+
+    } else {
+        fprintf(stderr, "Error: Unknown command %s\n", command);
+        print_usage();
+        exit(1);
+    }
+    exit(0);
 }
 void print_usage(void){
     printf("Usage: googit <command> [options]\n\n");
