@@ -6,7 +6,7 @@
 #define DIRECTORY "Ubuntu-backup"
 #define PROJECT "pl-p2"
 
-int main(void){
+int backup_gdrive(void){
 	char command[256];
 	char timestamp[64];
 	time_t now;
