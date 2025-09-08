@@ -33,11 +33,14 @@ int read_config(const char *key, char *value_buffer, size_t buffer_size){
         close(fd);
         exit(EXIT_FAILURE);
     }
+    lock_file(fd, F_RDLCK);
     if ((read_bytes = read(fd, buffer, sizeof(buffer)-1)) < 0){
         fprintf(stderr, "Error: config read error\n");
         close(fd);
         exit(EXIT_FAILURE);
     }
+    lock_file(fd, F_UNLCK);
+    close(fd);
     buffer[read_bytes] = '\0';
 
     short found = 0;
@@ -79,11 +82,13 @@ int write_config(const char *key, const char *value){
         close(fd);
         exit(EXIT_FAILURE);
     }
+    lock_file(fd, F_RDLCK);
     if ((read_bytes = read(fd, buffer, sizeof(buffer)-1)) <= 0){
         fprintf(stderr, "Error: config read error\n");
         close(fd);
         exit(EXIT_FAILURE);
     }
+    lock_file(fd, F_UNLCK);
     close(fd);
     buffer[read_bytes] = '\0';
     
@@ -117,8 +122,8 @@ int write_config(const char *key, const char *value){
         exit(EXIT_FAILURE);
     }
 
-    // file lock !!
     ssize_t write_bytes = 0;
+    lock_file(fd, F_WRLCK);
     for (int i=0; i<line_count; i++){
         write_bytes += write(fd, buffer, strlen(buffer));
         write_bytes += write(fd, "\n", (size_t)1);
@@ -126,7 +131,20 @@ int write_config(const char *key, const char *value){
             break;
         }
     }
+    lock_file(fd, F_UNLCK);
     // errno == EINTR
     close(fd);
     return 0;
+}
+void lock_file(int fd, short lock_type){
+    struct flock fl = {0};
+    fl.l_type = lock_type;
+    fl.l_whence = SEEK_SET;
+    fl.l_start = (off_t)0;
+    fl.l_len = (off_t)0;
+    if (fcntl(fd, F_SETLKW, &fl) < 0){
+        perror("lock_file");
+        close(fd);
+        exit(EXIT_FAILURE);
+    }
 }
