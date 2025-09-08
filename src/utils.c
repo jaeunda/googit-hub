@@ -50,15 +50,13 @@ int read_config(const char *key, char *value_buffer, size_t buffer_size){
         strncpy(temp_line, config_line, (size_t)(LEN_MAX-1));
         temp_line[LEN_MAX-1] = '\0';
 
-        char *cur_key = strtok(temp_line, "=");
-        char *cur_value = strtok(NULL, "");
-        if (cur_key && cur_value){
-            if (!strcmp(cur_key, key)){
-                strncpy(value_buffer, cur_value, (size_t)(buffer_size-1));
-                value_buffer[buffer_size-1]='\0';
-                found = (short)1;
-                break;
-            }
+        if (!strncmp(temp_line, key, strlen(key))){
+            strtok(temp_line, "=");
+            char *cur_value = strtok(NULL, "");
+            strncpy(value_buffer, cur_value, (size_t)(buffer_size-1));
+            value_buffer[buffer_size-1]='\0';
+            found = (short) 1;
+            break;
         }
         config_line = strtok(NULL, "\n");
     }
