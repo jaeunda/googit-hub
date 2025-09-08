@@ -13,7 +13,7 @@ $ googit init 1 20232372 다
 $ googit push
 $ googit push -m "push message"
 ```
-- `<timestamp>: <message>`: 구글 드라이브에 저장
+- `<timestamp>_<message>`: 구글 드라이브에 저장
 
 ### `googit run`
 ```
@@ -41,7 +41,7 @@ $ googit test
 ```
 - 최신 버전의 제출 파일의 압축을 해제하여 `googit run` 실행
 
-### (Planned) `googit restore`
+### (X) `googit restore`
 ```
 $ googit restore
 
@@ -57,3 +57,4 @@ Restoring from 2025-09-01_21-55-03...
 Restore complete.
 ```
 - 선택한 시점의 소스코드로 복원
+- 못합니다
