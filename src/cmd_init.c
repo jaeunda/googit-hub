@@ -43,26 +43,13 @@ void execute_init(const char *project_num, const char *student_id, const char *c
         rmdir(".googit");
         exit(EXIT_FAILURE);
     }
-    // 5. initial_clone_time
-    time_t now;
-    if ((now = time(NULL)) < 0){
-        perror("current time");
-        remove(".googit/googit_config");
-        rmdir(".googit/output_dir");
-        rmdir(".googit");
+    // 5. original/ : baseline
+    if (run_command("cp -a xv6-public/ .googit/original/") != 0){
+        fprintf(stderr, "Error: Failed to create a prinstine copy\n");
+        run_command("rm -rf xv6-public .googit");
         exit(EXIT_FAILURE);
     }
 
-    char time_str[128];
-    snprintf(time_str, sizeof(time_str), "%ld", now);
-    if (write_config("initial_clone_time", time_str) != 0){
-        fprintf(stderr, "Error: Failed to write initial_clone_time\n");
-        run_command("rm -rf xv6-public");
-        remove(".googit/googit_config");
-        rmdir(".googit/output_dir");
-        rmdir(".googit");
-        exit(EXIT_FAILURE);
-    }
     printf("\nGoogit project initialized successfully.\n");
     return;
 }
