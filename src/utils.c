@@ -70,7 +70,7 @@ int write_config(const char *key, const char *value){
     short key_found = 0;
 
     int fd;
-    if ((fd = open(CONFIG_PATH, O_RDONLY)) < 0){
+    if ((fd = open(CONFIG_PATH, O_RDONLY | O_CREAT, 0644)) < 0){
         fprintf(stderr, "Error: config open error\n");
         return -1;
     }
@@ -83,7 +83,7 @@ int write_config(const char *key, const char *value){
         return -1;
     }
     lock_file(fd, F_RDLCK);
-    if ((read_bytes = read(fd, buffer, sizeof(buffer)-1)) <= 0){
+    if ((read_bytes = read(fd, buffer, sizeof(buffer)-1)) < 0){
         fprintf(stderr, "Error: config read error\n");
         close(fd);
         return -1;
@@ -97,6 +97,7 @@ int write_config(const char *key, const char *value){
     while (temp_line && line_count < LINE_MAX){
         strncpy(config_lines[line_count++], temp_line, (size_t)(LEN_MAX-1));
         config_lines[line_count-1][LEN_MAX-1] = '\0';
+        temp_line = strtok(NULL, "\n");
     }
 
     // update
@@ -125,7 +126,7 @@ int write_config(const char *key, const char *value){
     ssize_t write_bytes = 0;
     lock_file(fd, F_WRLCK);
     for (int i=0; i<line_count; i++){
-        write_bytes += write(fd, buffer, strlen(buffer));
+        write_bytes += write(fd, config_lines[i], strlen(config_lines[i]));
         write_bytes += write(fd, "\n", (size_t)1);
         if (write_bytes > (ssize_t)CONFIG_SIZE_MAX){
             break;
@@ -147,7 +148,6 @@ void setup_gdrive(void){
     printf("   - For most other prompts, pressing Enter for the default is safe.\n");
     printf("Press Enter to continue...");
 
-    getchar();
     getchar();
 
     run_command("rclone config");
