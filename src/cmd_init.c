@@ -35,6 +35,10 @@ void execute_init(const char *project_num, const char *student_id, const char *c
             rmdir(".googit");
             exit(EXIT_FAILURE);
         }
+    
+    // 3-2. Set up google drive configuration
+    setup_gdrive();
+
     // 4. git clone <xv6-public>
     if (run_command("git clone https://github.com/mit-pdos/xv6-public.git") != 0){
         fprintf(stderr, "Error: Failed to clone xv6-public\n");
