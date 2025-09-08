@@ -6,7 +6,7 @@
 
 #include "utils.h"
 
-#define CONFIG_PATH ".googit/.googit_config"
+#define CONFIG_PATH ".googit/googit_config"
 #define LINE_MAX 32
 #define LEN_MAX 128
 #define CONFIG_SIZE_MAX 2048
@@ -72,7 +72,7 @@ int write_config(const char *key, const char *value){
     int fd;
     if ((fd = open(CONFIG_PATH, O_RDONLY)) < 0){
         fprintf(stderr, "Error: config open error\n");
-        exit(EXIT_FAILURE);
+        return -1;
     }
 
     char buffer[CONFIG_SIZE_MAX];
@@ -80,13 +80,13 @@ int write_config(const char *key, const char *value){
     if (lseek(fd, (off_t)0, SEEK_SET) < 0){
         perror("config");
         close(fd);
-        exit(EXIT_FAILURE);
+        return -1;
     }
     lock_file(fd, F_RDLCK);
     if ((read_bytes = read(fd, buffer, sizeof(buffer)-1)) <= 0){
         fprintf(stderr, "Error: config read error\n");
         close(fd);
-        exit(EXIT_FAILURE);
+        return -1;
     }
     lock_file(fd, F_UNLCK);
     close(fd);
@@ -114,12 +114,12 @@ int write_config(const char *key, const char *value){
     // write
     if ((fd = open(CONFIG_PATH, O_WRONLY | O_CREAT | O_TRUNC, 0644)) < 0){
         fprintf(stderr, "Error: config open error\n");
-        exit(EXIT_FAILURE);
+        return -1;
     }
     if (lseek(fd, (off_t)0, SEEK_SET) < 0){
         perror("config");
         close(fd);
-        exit(EXIT_FAILURE);
+        return -1;
     }
 
     ssize_t write_bytes = 0;
