@@ -40,6 +40,10 @@ void execute_init(const char *project_num, const char *student_id, const char *c
     setup_gdrive();
 
     // 4. git clone <xv6-public>
+    struct stat st2 = {0};
+    if (!stat("xv6-public", &st2) && S_ISDIR(st.st_mode)){
+        run_command("rm -rf xv6-public");
+    }
     if (run_command("git clone https://github.com/mit-pdos/xv6-public.git") != 0){
         fprintf(stderr, "Error: Failed to clone xv6-public\n");
         remove(".googit/googit_config");
@@ -54,6 +58,6 @@ void execute_init(const char *project_num, const char *student_id, const char *c
         exit(EXIT_FAILURE);
     }
 
-    printf("\nGoogit project initialized successfully.\n");
+    printf("\nGoogit project initialized.\n");
     return;
 }
