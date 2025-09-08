@@ -39,7 +39,7 @@ $ googit zip --revert
 ```
 $ googit test
 ```
-- 최신 버전의 제출 파일의 압축을 해제하여 `google run` 실행
+- 최신 버전의 제출 파일의 압축을 해제하여 `googit run` 실행
 
 ### (Planned) `googit restore`
 ```
