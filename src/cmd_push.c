@@ -12,7 +12,7 @@ void execute_push(const char *msg){
     char sync_command[1024];
     // 1. copy to output_dir
     snprintf(sync_command, sizeof(sync_command), 
-        "rsync -a --delete --compare-dest=.googit/original/ xv6-public/ .googit/output_dir/");
+        "rsync -a --delete --compare-dest=../original/ xv6-public/ .googit/output_dir/");
     
     if (run_command(sync_command) != 0){
         fprintf(stderr, "Error: Failed to sync modified files.\n");
