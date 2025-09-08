@@ -136,6 +136,43 @@ int write_config(const char *key, const char *value){
     close(fd);
     return 0;
 }
+void setup_gdrive(void){
+    printf("\n--- Starting Google Drive Setup via rclone ---\n");
+    printf("1. The `rclone` configuration tool will now start.\n");
+    printf("2. A browser window may open to authenticate with your Google account.\n");
+    printf("3. Follow the on-screen prompts carefully:\n");
+    printf("   - Choose 'n' for a new remote.\n");
+    printf("   - Give your remote a simple name (e.g., 'gdrive_os'). You will need this name next.\n");
+    printf("   - Choose 'drive' for Google Drive (find it in the list).\n");
+    printf("   - For most other prompts, pressing Enter for the default is safe.\n");
+    printf("Press Enter to continue...");
+
+    getchar();
+    getchar();
+
+    run_command("rclone config");
+
+    char drive_name[64];
+    char backup_dir[64];
+
+    printf("\n--- Googit Configuration ---\n");
+    printf("Please enter the rclone remote name for Google Drive (e.g., gdrive_os): ");
+    fgets(drive_name, sizeof(drive_name), stdin);
+    drive_name[strcspn(drive_name, "\n")] = 0;
+
+    printf("Enter a directory name for your backups within Google Drive (e.g., os_backup): ");
+    fgets(backup_dir, sizeof(backup_dir), stdin);
+    backup_dir[strcspn(backup_dir, "\n")] = 0;
+
+    if (write_config("drive_name", drive_name) != 0 ||
+        write_config("backup_dir", backup_dir) != 0) {
+        fprintf(stderr, "Error: Failed to save Google Drive configuration.\n");
+        exit(1);
+    }
+
+    printf("\nGoogle Drive configuration saved successfully.\n");
+    return;
+}
 void lock_file(int fd, short lock_type){
     struct flock fl = {0};
     fl.l_type = lock_type;
