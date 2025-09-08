@@ -23,7 +23,7 @@ int read_config(const char *key, char *value_buffer, size_t buffer_size){
     int fd;
     if ((fd = open(CONFIG_PATH, O_RDONLY)) < 0){
         fprintf(stderr, "Error: cannot open config file '%s'.\n", CONFIG_PATH);
-        exit(1);
+        return -1;
     }
 
     char buffer[CONFIG_SIZE_MAX];
@@ -31,13 +31,13 @@ int read_config(const char *key, char *value_buffer, size_t buffer_size){
     if (lseek(fd, (off_t)0, SEEK_SET) < 0){
         perror("config");
         close(fd);
-        exit(EXIT_FAILURE);
+        return -1;
     }
     lock_file(fd, F_RDLCK);
     if ((read_bytes = read(fd, buffer, sizeof(buffer)-1)) < 0){
         fprintf(stderr, "Error: config read error\n");
         close(fd);
-        exit(EXIT_FAILURE);
+        return -1;
     }
     lock_file(fd, F_UNLCK);
     close(fd);
