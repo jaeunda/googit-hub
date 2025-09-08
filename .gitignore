@@ -1,3 +1,5 @@
 bin/
 obj/
 .git/
+.googit/
+xv6-public/

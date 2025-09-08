@@ -35,7 +35,15 @@ void execute_init(const char *project_num, const char *student_id, const char *c
             rmdir(".googit");
             exit(EXIT_FAILURE);
         }
+    
+    // 3-2. Set up google drive configuration
+    setup_gdrive();
+
     // 4. git clone <xv6-public>
+    struct stat st2 = {0};
+    if (!stat("xv6-public", &st2) && S_ISDIR(st.st_mode)){
+        run_command("rm -rf xv6-public");
+    }
     if (run_command("git clone https://github.com/mit-pdos/xv6-public.git") != 0){
         fprintf(stderr, "Error: Failed to clone xv6-public\n");
         remove(".googit/googit_config");
@@ -43,26 +51,13 @@ void execute_init(const char *project_num, const char *student_id, const char *c
         rmdir(".googit");
         exit(EXIT_FAILURE);
     }
-    // 5. initial_clone_time
-    time_t now;
-    if ((now = time(NULL)) < 0){
-        perror("current time");
-        remove(".googit/googit_config");
-        rmdir(".googit/output_dir");
-        rmdir(".googit");
+    // 5. original/ : baseline
+    if (run_command("cp -a xv6-public/ .googit/original/") != 0){
+        fprintf(stderr, "Error: Failed to create a prinstine copy\n");
+        run_command("rm -rf xv6-public .googit");
         exit(EXIT_FAILURE);
     }
 
-    char time_str[128];
-    snprintf(time_str, sizeof(time_str), "%ld", now);
-    if (write_config("initial_clone_time", time_str) != 0){
-        fprintf(stderr, "Error: Failed to write initial_clone_time\n");
-        run_command("rm -rf xv6-public");
-        remove(".googit/googit_config");
-        rmdir(".googit/output_dir");
-        rmdir(".googit");
-        exit(EXIT_FAILURE);
-    }
-    printf("\nGoogit project initialized successfully.\n");
+    printf("\nGoogit project initialized.\n");
     return;
 }
