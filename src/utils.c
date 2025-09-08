@@ -60,7 +60,7 @@ int read_config(const char *key, char *value_buffer, size_t buffer_size){
                 break;
             }
         }
-        config_line = (NULL, "\n");
+        config_line = strtok(NULL, "\n");
     }
     return found ? 0 : -1;
 }
