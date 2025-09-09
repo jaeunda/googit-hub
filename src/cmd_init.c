@@ -51,6 +51,8 @@ void execute_init(const char *project_num, const char *student_id, const char *c
         rmdir(".googit");
         exit(EXIT_FAILURE);
     }
+    run_command("rm -rf xv6-public/.git");
+
     // 5. original/ : baseline
     if (run_command("cp -a xv6-public/ .googit/original/") != 0){
         fprintf(stderr, "Error: Failed to create a prinstine copy\n");
