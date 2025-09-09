@@ -62,7 +62,12 @@ void execute_zip(int is_revert){
         exit(EXIT_FAILURE);
     }
 
-    printf("Successfully created %s.\n", filename);
     // 3. version++
-
+    version++;
+    snprintf(version_str, sizeof(version_str), "%d", version);
+    if (write_config("version", version_str)){
+        fprintf(stderr, "Warning: Failed to update version number in config file.\n");
+    }
+    
+    printf("\nZip Completed: %s.\n", filename);
 }
