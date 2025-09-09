@@ -54,6 +54,15 @@ void execute_zip(int is_revert){
     }
 
     // 2. zip
+    char cmd_zip[1024];
+    snprintf(cmd_zip, sizeof(cmd_zip), "(cd .googit/output_dir && zip -r ../../%s .)", filename);
 
+    if (run_command(cmd_zip) < 0){
+        fprintf(stderr, "Error: Failed to create zip file.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Successfully created %s.\n", filename);
     // 3. version++
+
 }
