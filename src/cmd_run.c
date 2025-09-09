@@ -52,7 +52,6 @@ void execute_run(void){
     // 4. make && make qemu
     if (run_command("make && make qemu")){
         fprintf(stderr, "Error: Build Failed.\n");
-        exit(1);
     }
 
     // 5. make clean
