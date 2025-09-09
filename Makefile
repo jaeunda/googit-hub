@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g -Iinclude
+CFLAGS = -Wall -Wextra -g -Iinclude -Wno-format-truncation
 
 TARGET_DIR = bin
 OBJ_DIR = obj
