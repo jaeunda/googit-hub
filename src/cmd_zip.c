@@ -27,6 +27,7 @@ void execute_zip(int is_revert){
         } else {
             printf("Version is already 0.\n");
         }
+        exit(EXIT_SUCCESS);
     }
 
     // 1. make filename
