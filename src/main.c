@@ -16,7 +16,7 @@ int main(int argc, char **argv){
     if (!strcmp(command, "init")){
         if (argc != 5){
             fprintf(stderr, "Error: Incorrect arguments for init.\n");
-            fprintf(stderr, "Usage: googit init <project_num> <student_id> <class_num>");
+            fprintf(stderr, "Usage: googit init <project_num> <student_id> <class_num>\n");
             exit(1);
         }
         execute_init(argv[2], argv[3], argv[4]);
