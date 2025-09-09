@@ -29,7 +29,7 @@ void execute_run(void){
         perror(".googit/run-xv6");
         exit(EXIT_FAILURE);
     }
-    if (run_command("cp -a .googit/original/ .googit/run-xv6")){
+    if (run_command("cp -a .googit/original/* .googit/run-xv6")){
         fprintf(stderr, "Error: Failed to create a temporary directory.\n");
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
@@ -48,18 +48,19 @@ void execute_run(void){
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
     }
-
-    // 5. make && make qemu
+    
+    // 4. make && make qemu
     if (run_command("make && make qemu")){
         fprintf(stderr, "Error: Build Failed.\n");
+        exit(1);
     }
 
-    // 6. make clean
+    // 5. make clean
     if (run_command("make clean")){
         perror("make clean");
     }
 
-    // 7. remove temporary directory
+    // 6. remove temporary directory
     if (chdir(current_path) < 0){
         perror("run-chdir");
         run_command(cmd_rmdir);
