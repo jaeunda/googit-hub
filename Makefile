@@ -38,6 +38,5 @@ uninstall:
 clean:
 	@echo "Cleaning up build files..."
 	@rm -rf $(TARGET_DIR) $(OBJ_DIR)
-	@rm -rf .googit xv6-public
 
 .PHONY: all clean install uninstall
