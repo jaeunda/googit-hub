@@ -49,7 +49,7 @@ void execute_run(void){
     }
     
     // 4. make && make qemu
-    if (run_command("make && make qemu")){
+    if (run_command("make && make qemu-nox")){
         fprintf(stderr, "Error: Build Failed.\n");
     }
 
