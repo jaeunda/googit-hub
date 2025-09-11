@@ -12,7 +12,6 @@ void execute_run(void){
     char current_path[4096];
     if (!getcwd(current_path, sizeof(current_path))){
         perror("getcwd");
-        run_command("rm -rf .googit/run-xv6");
         exit(EXIT_FAILURE);
     }
     char run_path[4096];
