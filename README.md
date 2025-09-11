@@ -1,5 +1,19 @@
 # `googit-hub`
-홍박사님이 git을 사용하지 말라고 하셔서... 직접 만든 Google Drive 백업 커맨드
+홍 박사님이 git을 사용하지 말라고 하셔서... 직접 만든 Google Drive 백업 커맨드
+## Install
+```
+$ git clone https://github.com/jaeunda/googit-hub.git
+$ cd googit-hub && make install
+$ rm -rf googit-hub
+```
+## Run
+```
+~$ mkdir project_dir && cd project_dir
+~/project_dir$ googit init 1 20232372 다
+~/project_dir$ ls -a
+. .. .googit xv6-public
+~/project_dir$ googit push
+```
 ## Command
 ### `googit init`
 ```
