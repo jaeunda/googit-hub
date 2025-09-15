@@ -9,6 +9,15 @@
 
 static int backup_to_gdrive(const char *msg);
 void execute_push(const char *msg){
+    // 0. make clean
+    if (run_command("cd xv6-public && make clean") < 0){
+        fprintf(stderr, "Error: Failed to clean the build artifacts.\n");
+        exit(EXIT_FAILURE);
+    }
+    if (run_command("cd ..") < 0){
+        fprintf(stderr, "Error: Failed to change directory.\n");
+        exit(EXIT_FAILURE);
+    }
     char sync_command[1024];
     // 1. copy to output_dir
     snprintf(sync_command, sizeof(sync_command), 
