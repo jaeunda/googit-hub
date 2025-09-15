@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "commands.h"
 #include "utils.h"
@@ -45,21 +46,37 @@ void execute_zip(int is_revert){
     }
     int version = atoi(version_str);
 
-    char filename[256];
+    char zip_filename[256];
     if (!version){
-        snprintf(filename, sizeof(filename), "#%s_%s_%s.zip",
+        snprintf(zip_filename, sizeof(zip_filename), "#%s_%s_%s.zip",
             project_num, student_id, class_num);
     } else {
-        snprintf(filename, sizeof(filename), "#%s_%s_%s_V%d.zip",
+        snprintf(zip_filename, sizeof(zip_filename), "#%s_%s_%s_V%d.zip",
             project_num, student_id, class_num, version+1);
     }
 
     // 2. zip
-    char cmd_zip[1024];
-    snprintf(cmd_zip, sizeof(cmd_zip), "(cd .googit/output_dir && zip -r ../../%s .)", filename);
+    if (access("소스코드", F_OK) < 0){
+        mkdir("소스코드", 0755);
+    }
+    if (run_command("cp -a .googit/output_dir/* 소스코드")){
+        fprintf(stderr, "Error: Failed to create the temporary directory.\n");
+        exit(EXIT_FAILURE);
+    }
 
-    if (run_command(cmd_zip) < 0){
-        fprintf(stderr, "Error: Failed to create zip file.\n");
+    char docs_filename[256];
+    snprintf(docs_filename, sizeof(docs_filename), "#%s_%s_%s.docx", project_num, student_id, class_num);
+    char cmd_zip[1024];
+    snprintf(cmd_zip, sizeof(cmd_zip), "zip ./%s -r ./소스코드/* \"%s\"", zip_filename, docs_filename);
+
+    if (run_command(cmd_zip)){
+        fprintf(stderr, "Error: Failed to create the zip file.\n");
+        rmdir("./소스코드");
+        exit(EXIT_FAILURE);
+    }
+
+    if (run_command("rm -rf 소스코드")){
+        fprintf(stderr, "Error: Failed to remove the temporary directory.\n");
         exit(EXIT_FAILURE);
     }
 
@@ -70,5 +87,5 @@ void execute_zip(int is_revert){
         fprintf(stderr, "Warning: Failed to update version number in config file.\n");
     }
     
-    printf("\nZip Completed: %s.\n", filename);
+    printf("\nZip Completed: %s.\n", zip_filename);
 }
