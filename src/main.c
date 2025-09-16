@@ -44,7 +44,7 @@ int main(int argc, char **argv){
         }
     } else if (!strcmp(command, "test")){
         if (argc == 4 && !strcmp(argv[2], "-f")){
-            execute_test(argc[3]);
+            execute_test(argv[3]);
         } else if (argc == 2){
             execute_test(NULL);
         } else {
