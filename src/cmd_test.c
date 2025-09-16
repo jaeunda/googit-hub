@@ -64,10 +64,24 @@ void execute_test(void){
 
     // 2. unzip && overwrite
     char cmd_unzip[1024];
-    snprintf(cmd_unzip, sizeof(cmd_unzip), "unzip -o \"%s\" -d %s", test_filename, run_path);
+    snprintf(cmd_unzip, sizeof(cmd_unzip), "unzip -o \"%s\" -d unzip_dir", test_filename);
 
     if (run_command(cmd_unzip)){
         fprintf(stderr, "Error: Failed to unzip the file.\n");
+        run_command(cmd_rmdir);
+        run_command("rm -rf unzip_dir");
+        exit(EXIT_FAILURE);
+    }
+
+    if (run_command("cp -a unzip_dir/소스코드/* .googit/run-xv6")){
+        fprintf(stderr, "Error: Failed to copy source file.\n");
+        run_command(cmd_rmdir);
+        run_command("rm -rf unzip_dir");
+        exit(EXIT_FAILURE);
+    }
+
+    if (run_command("rm -rf unzip_dir")){
+        fprintf(stderr, "Error: Failed to remove unzip directory.\n");
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
     }
