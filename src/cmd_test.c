@@ -7,7 +7,7 @@
 #include "commands.h"
 #include "utils.h"
 
-void execute_test(void){
+void execute_test(const char *filename){
     char project_num[8];
     char student_id[16];
     char class_num[8];
@@ -24,7 +24,9 @@ void execute_test(void){
     char test_filename[256];
 
     // 0. init: filename, current path
-    if (!version){
+    if (filename){
+        strncpy(test_filename, filename, sizeof(test_filename));
+    } else if (!version){
         fprintf(stdout, "There is no file to test.\n");
         exit(EXIT_SUCCESS);
     } else if (version == 1){

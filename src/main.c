@@ -43,7 +43,15 @@ int main(int argc, char **argv){
             exit(1);
         }
     } else if (!strcmp(command, "test")){
-        execute_test();
+        if (argc == 4 && !strcmp(argv[2], "-f")){
+            execute_test(argv[3]);
+        } else if (argc == 2){
+            execute_test(NULL);
+        } else {
+            fprintf(stderr, "Error: Incorrect arguments for test.\n");
+            fprintf(stderr, "Usage: googit test [ -f \"filename\" ]\n");
+            exit(EXIT_FAILURE);
+        }
     } else if (!strcmp(command, "restore")){
         execute_restore();
     } else if (!strcmp(command, "--help") || !strcmp(command, "help")){
@@ -62,7 +70,7 @@ void print_usage(void){
     printf("  push [-m \"message\"]             Backup modified files to Google Drive\n");
     printf("  run                             Run the project in a test environment\n");
     printf("  zip [--revert]                  Create a submission zip file or revert version\n");
-    printf("  test                            Test the latest submission zip file\n");
+    printf("  test [-f \"filename\"]          Test the latest submission zip file\n");
     printf("  restore                         Restore files from a previous backup\n");
     printf("\n");
 }
