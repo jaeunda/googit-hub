@@ -52,8 +52,10 @@ $ googit zip --revert
 ### `googit test`
 ```
 $ googit test
+$ googit test -f "filename"
 ```
 - 최신 버전의 제출 파일의 압축을 해제하여 `googit run` 실행
+- `-f` 옵션 사용 시 제출 파일 지정 가능
 
 ### (X) `googit restore`
 ```
