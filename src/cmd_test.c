@@ -12,15 +12,18 @@ void execute_test(const char *filename){
     char student_id[16];
     char class_num[8];
     char version_str[8];
+    int version;
 
-    if (read_config("project_num", project_num, sizeof(project_num)) < 0 ||
+    if (filename == NULL && 
+        (read_config("project_num", project_num, sizeof(project_num)) < 0 ||
         read_config("student_id", student_id, sizeof(student_id)) < 0 ||
         read_config("class_num", class_num, sizeof(class_num)) < 0 ||
-        read_config("version", version_str, sizeof(version_str)) < 0){
+        read_config("version", version_str, sizeof(version_str)) < 0)){
         fprintf(stderr, "Error: Could not read data from config file.\n");
         exit(EXIT_FAILURE);
+    } else {
+        version = atoi(version_str);
     }
-    int version = atoi(version_str);
     char test_filename[256];
 
     // 0. init: filename, current path
@@ -76,10 +79,12 @@ void execute_test(const char *filename){
     }
 
     if (run_command("cp -a unzip_dir/소스코드/* run-xv6/xv6-public")){
-        fprintf(stderr, "Error: Failed to copy source file.\n");
-        run_command(cmd_rmdir);
-        run_command("rm -rf unzip_dir");
-        exit(EXIT_FAILURE);
+        if (run_command("cp -a unzip_dir/* run-xv6/xv6-public")){
+            fprintf(stderr, "Error: Failed to copy source file.\n");
+            run_command(cmd_rmdir);
+            run_command("rm -rf unzip_dir");
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (run_command("rm -rf unzip_dir")){
