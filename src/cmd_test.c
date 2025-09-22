@@ -45,7 +45,7 @@ void execute_test(const char *filename){
 
     // 1. make temporary directory
     char run_path[256];
-    snprintf(run_path, sizeof(run_path), "%s/.googit/run-xv6", current_path);
+    snprintf(run_path, sizeof(run_path), "%s/run-xv6", current_path);
     char cmd_rmdir[512];
     snprintf(cmd_rmdir, sizeof(cmd_rmdir), "rm -rf %s", run_path);
     
@@ -55,10 +55,10 @@ void execute_test(const char *filename){
     }
 
     if (mkdir(run_path, 0755) < 0){
-        perror(".googit/run-xv6");
+        perror("run-xv6");
         exit(EXIT_FAILURE);
     }
-    if (run_command("cp -a .googit/original/* .googit/run-xv6")){
+    if (run_command("cd run-xv6 && git clone https://github.com/mit-pdos/xv6-public.git && cd ..")){
         fprintf(stderr, "Error: Failed to create a temporary directory.\n");
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
@@ -75,7 +75,7 @@ void execute_test(const char *filename){
         exit(EXIT_FAILURE);
     }
 
-    if (run_command("cp -a unzip_dir/소스코드/* .googit/run-xv6")){
+    if (run_command("cp -a unzip_dir/소스코드/* run-xv6/xv6-public")){
         fprintf(stderr, "Error: Failed to copy source file.\n");
         run_command(cmd_rmdir);
         run_command("rm -rf unzip_dir");
@@ -89,7 +89,7 @@ void execute_test(const char *filename){
     }
 
     // 3. change directory
-    if (chdir(run_path) < 0){
+    if (chdir("run-xv6/xv6-public") < 0){
         perror("test-chdir");
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
