@@ -7,7 +7,7 @@
 #include "commands.h"
 #include "utils.h"
 
-void execute_run(void){
+void execute_run(int is_clean){
     // 0. init
     char current_path[4096];
     if (!getcwd(current_path, sizeof(current_path))){
