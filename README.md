@@ -32,6 +32,7 @@ $ googit push -m "push message"
 ### `googit run`
 ```
 $ googit run
+$ googit run --no-clean
 ```
 - `xv6-public` 원본에 수정사항을 덮어씌워 임시 테스트 환경 생성
 - `make` && `make qemu` 실행
@@ -53,6 +54,7 @@ $ googit zip --revert
 ```
 $ googit test
 $ googit test -f "filename"
+$ googit test --no-clean -f "filename"
 ```
 - 최신 버전의 제출 파일의 압축을 해제하여 `googit run` 실행
 - `-f` 옵션 사용 시 제출 파일 지정 가능
