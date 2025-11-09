@@ -54,16 +54,18 @@ void execute_run(int is_clean){
     }
 
     // 5. make clean
-    if (run_command("make clean")){
+    if (is_clean && run_command("make clean")){
         perror("make clean");
     }
 
     // 6. remove temporary directory
-    if (chdir(current_path) < 0){
+    if (is_clean && chdir(current_path) < 0){
         perror("run-chdir");
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
     }
-    run_command(cmd_rmdir);
+
+    if (is_clean)
+        run_command(cmd_rmdir);
     return;
 }
