@@ -7,7 +7,7 @@
 #include "commands.h"
 #include "utils.h"
 
-void execute_test(const char *filename){
+void execute_test(const char *filename, int is_clean){
     char project_num[8];
     char student_id[16];
     char class_num[8];
