@@ -47,10 +47,16 @@ int main(int argc, char **argv){
             exit(1);
         }
     } else if (!strcmp(command, "test")){
-        if (argc == 4 && !strcmp(argv[2], "-f")){
-            execute_test(argv[3]);
+        if (argc == 3 && !strcmp(argv[2], "--no-clean")){
+            execute_test(NULL, 0);
+        } else if (argc == 4 && !strcmp(argv[2], "-f")){
+            execute_test(argv[3], 1);
+        } else if (argc == 5 && !strcmp(argv[2], "-f") && !strcmp(argv[4], "--no-clean")) {
+            execute_test(argv[3], 0);
+        } else if (argc == 5 && !strcmp(argv[2], "--no-clean") && !strcmp(argv[3], "-f")){
+            execute_test(argv[4], 0);
         } else if (argc == 2){
-            execute_test(NULL);
+            execute_test(NULL, 1);
         } else {
             fprintf(stderr, "Error: Incorrect arguments for test.\n");
             fprintf(stderr, "Usage: googit test [ -f \"filename\" ]\n");
