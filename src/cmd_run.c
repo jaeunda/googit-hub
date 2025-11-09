@@ -20,22 +20,23 @@ void execute_run(int is_clean){
     snprintf(cmd_rmdir, sizeof(cmd_rmdir), "rm -rf %s", run_path);
     
     // 1. make temporary directory
+    int is_reboot = 0;
     struct stat st = {0};
     if (!stat(run_path, &st) && S_ISDIR(st.st_mode)){
-        run_command(cmd_rmdir);
+        is_reboot = 1;
     }
-    if (mkdir(run_path, 0755) < 0){
+    if (!is_reboot && mkdir(run_path, 0755) < 0){
         perror(".googit/run-xv6");
         exit(EXIT_FAILURE);
     }
-    if (run_command("cp -a .googit/original/* .googit/run-xv6")){
+    if (!is_reboot && run_command("cp -a .googit/original/* .googit/run-xv6")){
         fprintf(stderr, "Error: Failed to create a temporary directory.\n");
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
     }
 
     // 2. overwrite
-    if (run_command("cp -a .googit/output_dir/* .googit/run-xv6/")){
+    if (!is_reboot && run_command("cp -a .googit/output_dir/* .googit/run-xv6/")){
         fprintf(stderr, "Error: Failed to copy modified files.\n");
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
