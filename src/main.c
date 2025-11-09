@@ -27,14 +27,18 @@ int main(int argc, char **argv){
             execute_push(NULL);
         } else {
             fprintf(stderr, "Error: Incorrect arguments for push.\n");
-            fprintf(stderr, "Usage: googit push [-m \"message\"]\n");
+            fprintf(stderr, "Usage: googit push [ -m \"message\" ]\n");
             exit(1);
         }
     } else if (!strcmp(command, "run")){
         if (argc == 3 && !strcmp(argv[2], "--no-clean")){
             execute_run(0);
-        } else {
+        } else if (argc == 2){
             execute_run(1);
+        } else {
+            fprintf(stderr, "Error: Incorrect arguments for test.\n");
+            fprintf(stderr, "Usage: googit run [ --no-clean ]\n");
+            exit(1);
         }
     } else if (!strcmp(command, "zip")){
         if (argc == 3 && !strcmp(argv[2], "--revert")){
@@ -43,17 +47,23 @@ int main(int argc, char **argv){
             execute_zip(0);
         } else {
             fprintf(stderr, "Error: Incorrect arguments for zip.\n");
-            fprintf(stderr, "Usage: googit zip [--revert]\n");
+            fprintf(stderr, "Usage: googit zip [ --revert ]\n");
             exit(1);
         }
     } else if (!strcmp(command, "test")){
-        if (argc == 4 && !strcmp(argv[2], "-f")){
-            execute_test(argv[3]);
+        if (argc == 3 && !strcmp(argv[2], "--no-clean")){
+            execute_test(NULL, 0);
+        } else if (argc == 4 && !strcmp(argv[2], "-f")){
+            execute_test(argv[3], 1);
+        } else if (argc == 5 && !strcmp(argv[2], "-f") && !strcmp(argv[4], "--no-clean")) {
+            execute_test(argv[3], 0);
+        } else if (argc == 5 && !strcmp(argv[2], "--no-clean") && !strcmp(argv[3], "-f")){
+            execute_test(argv[4], 0);
         } else if (argc == 2){
-            execute_test(NULL);
+            execute_test(NULL, 1);
         } else {
             fprintf(stderr, "Error: Incorrect arguments for test.\n");
-            fprintf(stderr, "Usage: googit test [ -f \"filename\" ]\n");
+            fprintf(stderr, "Usage: googit test [ -f \"filename\" ] [ --no-clean ]\n");
             exit(EXIT_FAILURE);
         }
     } else if (!strcmp(command, "restore")){
@@ -70,11 +80,11 @@ int main(int argc, char **argv){
 void print_usage(void){
     printf("Usage: googit <command> [options]\n\n");
     printf("Available commands:\n");
-    printf("  init <proj_num> <id> <class_num>  Initialize a new googit project\n");
-    printf("  push [-m \"message\"]             Backup modified files to Google Drive\n");
-    printf("  run                             Run the project in a test environment\n");
-    printf("  zip [--revert]                  Create a submission zip file or revert version\n");
-    printf("  test [-f \"filename\"]          Test the latest submission zip file\n");
-    printf("  restore                         Restore files from a previous backup\n");
+    printf("  init <proj_num> <id> <class_num>          Initialize a new googit project\n");
+    printf("  push [ -m \"message\" ]                   Backup modified files to Google Drive\n");
+    printf("  run  [ --no-clean ]                       Run the project in a test environment\n");
+    printf("  zip [ --revert ]                          Create a submission zip file or revert version\n");
+    printf("  test [ -f \"filename\" ] [ --no-clean ]   Test the latest submission zip file\n");
+    printf("  restore                                   Restore files from a previous backup\n");
     printf("\n");
 }

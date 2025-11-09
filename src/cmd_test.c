@@ -7,7 +7,7 @@
 #include "commands.h"
 #include "utils.h"
 
-void execute_test(const char *filename){
+void execute_test(const char *filename, int is_clean){
     char project_num[8];
     char student_id[16];
     char class_num[8];
@@ -52,16 +52,17 @@ void execute_test(const char *filename){
     char cmd_rmdir[512];
     snprintf(cmd_rmdir, sizeof(cmd_rmdir), "rm -rf %s", run_path);
     
+    int is_reboot = 0;
     struct stat st = {0};
     if (!stat(run_path, &st) && S_ISDIR(st.st_mode)){
-        run_command(cmd_rmdir);
+        is_reboot = 1;
     }
 
-    if (mkdir(run_path, 0755) < 0){
+    if (!is_reboot && mkdir(run_path, 0755) < 0){
         perror("run-xv6");
         exit(EXIT_FAILURE);
     }
-    if (run_command("cd run-xv6 && git clone https://github.com/mit-pdos/xv6-public.git && cd ..")){
+    if (!is_reboot && run_command("cd run-xv6 && git clone https://github.com/mit-pdos/xv6-public.git && cd ..")){
         fprintf(stderr, "Error: Failed to create a temporary directory.\n");
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
@@ -71,14 +72,14 @@ void execute_test(const char *filename){
     char cmd_unzip[1024];
     snprintf(cmd_unzip, sizeof(cmd_unzip), "unzip -o \"%s\" -d unzip_dir", test_filename);
 
-    if (run_command(cmd_unzip)){
+    if (!is_reboot && run_command(cmd_unzip)){
         fprintf(stderr, "Error: Failed to unzip the file.\n");
         run_command(cmd_rmdir);
         run_command("rm -rf unzip_dir");
         exit(EXIT_FAILURE);
     }
 
-    if (run_command("cp -a unzip_dir/소스코드/* run-xv6/xv6-public")){
+    if (!is_reboot && run_command("cp -a unzip_dir/소스코드/* run-xv6/xv6-public")){
         if (run_command("cp -a unzip_dir/* run-xv6/xv6-public")){
             fprintf(stderr, "Error: Failed to copy source file.\n");
             run_command(cmd_rmdir);
@@ -87,7 +88,7 @@ void execute_test(const char *filename){
         }
     }
 
-    if (run_command("rm -rf unzip_dir")){
+    if (!is_reboot && run_command("rm -rf unzip_dir")){
         fprintf(stderr, "Error: Failed to remove unzip directory.\n");
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
@@ -106,18 +107,19 @@ void execute_test(const char *filename){
     }
 
     // 5. make clean
-    if (run_command("make clean")){
+    if (is_clean && run_command("make clean")){
         perror("make clean");
     }
 
     // 6. change directory
-    if (chdir(current_path) < 0){
+    if (is_clean && chdir(current_path) < 0){
         perror("test-chdir");
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
     }
 
     // 7. remove test directory
-    run_command(cmd_rmdir);
+    if (is_clean)
+        run_command(cmd_rmdir);
 
 }
