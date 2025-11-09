@@ -7,7 +7,7 @@
 #include "commands.h"
 #include "utils.h"
 
-void execute_run(void){
+void execute_run(int is_clean){
     // 0. init
     char current_path[4096];
     if (!getcwd(current_path, sizeof(current_path))){
@@ -20,22 +20,23 @@ void execute_run(void){
     snprintf(cmd_rmdir, sizeof(cmd_rmdir), "rm -rf %s", run_path);
     
     // 1. make temporary directory
+    int is_reboot = 0;
     struct stat st = {0};
     if (!stat(run_path, &st) && S_ISDIR(st.st_mode)){
-        run_command(cmd_rmdir);
+        is_reboot = 1;
     }
-    if (mkdir(run_path, 0755) < 0){
+    if (!is_reboot && mkdir(run_path, 0755) < 0){
         perror(".googit/run-xv6");
         exit(EXIT_FAILURE);
     }
-    if (run_command("cp -a .googit/original/* .googit/run-xv6")){
+    if (!is_reboot && run_command("cp -a .googit/original/* .googit/run-xv6")){
         fprintf(stderr, "Error: Failed to create a temporary directory.\n");
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
     }
 
     // 2. overwrite
-    if (run_command("cp -a .googit/output_dir/* .googit/run-xv6/")){
+    if (!is_reboot && run_command("cp -a .googit/output_dir/* .googit/run-xv6/")){
         fprintf(stderr, "Error: Failed to copy modified files.\n");
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
@@ -54,16 +55,18 @@ void execute_run(void){
     }
 
     // 5. make clean
-    if (run_command("make clean")){
+    if (is_clean && run_command("make clean")){
         perror("make clean");
     }
 
     // 6. remove temporary directory
-    if (chdir(current_path) < 0){
+    if (is_clean && chdir(current_path) < 0){
         perror("run-chdir");
         run_command(cmd_rmdir);
         exit(EXIT_FAILURE);
     }
-    run_command(cmd_rmdir);
+
+    if (is_clean)
+        run_command(cmd_rmdir);
     return;
 }
