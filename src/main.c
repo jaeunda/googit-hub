@@ -31,7 +31,11 @@ int main(int argc, char **argv){
             exit(1);
         }
     } else if (!strcmp(command, "run")){
-        execute_run();
+        if (argc == 3 && !strcmp(argv[2], "--no-clean")){
+            execute_run(0);
+        } else {
+            execute_run(1);
+        }
     } else if (!strcmp(command, "zip")){
         if (argc == 3 && !strcmp(argv[2], "--revert")){
             execute_zip(1);
